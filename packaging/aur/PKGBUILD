@@ -11,7 +11,12 @@ pkgdesc="Unofficial desktop client for Nintendo Music, with Discord Rich Presenc
 arch=('x86_64')
 url="https://github.com/Axolat000/Unofficial-Nintendo-Music-client"
 license=('GPL-3.0-or-later')
-depends=('gtk3' 'nss' 'alsa-lib' 'hicolor-icon-theme')
+# Taken from the DT_NEEDED entries of the shipped binary rather than guessed.
+# mesa (libgbm) and libcups in particular are not pulled in by gtk3.
+depends=('alsa-lib' 'at-spi2-core' 'cairo' 'dbus' 'expat' 'glib2' 'gtk3'
+         'hicolor-icon-theme' 'libcups' 'libx11' 'libxcb' 'libxcomposite'
+         'libxdamage' 'libxext' 'libxfixes' 'libxkbcommon' 'libxrandr'
+         'mesa' 'nspr' 'nss' 'pango' 'systemd-libs')
 optdepends=('libnotify: desktop notifications when the track changes'
             'discord: Rich Presence integration')
 provides=('nintendo-music-client')
