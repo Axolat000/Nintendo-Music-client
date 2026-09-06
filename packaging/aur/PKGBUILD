@@ -11,13 +11,16 @@ pkgdesc="Unofficial desktop client for Nintendo Music, with Discord Rich Presenc
 arch=('x86_64')
 url="https://github.com/Axolat000/Unofficial-Nintendo-Music-client"
 license=('GPL-3.0-or-later')
-# Taken from the DT_NEEDED entries of the shipped binary rather than guessed.
-# mesa (libgbm) and libcups in particular are not pulled in by gtk3.
+# From the DT_NEEDED entries of the shipped binary, plus the libraries the
+# AppImage bundles in usr/lib and Electron loads at runtime (libnotify, libXss,
+# libXtst), which do not appear in DT_NEEDED. mesa (libgbm) and libcups are
+# not pulled in by gtk3.
 depends=('alsa-lib' 'at-spi2-core' 'cairo' 'dbus' 'expat' 'glib2' 'gtk3'
-         'hicolor-icon-theme' 'libcups' 'libx11' 'libxcb' 'libxcomposite'
-         'libxdamage' 'libxext' 'libxfixes' 'libxkbcommon' 'libxrandr'
-         'mesa' 'nspr' 'nss' 'pango' 'systemd-libs')
-optdepends=('libnotify: desktop notifications when the track changes'
+         'hicolor-icon-theme' 'libcups' 'libnotify' 'libx11' 'libxcb'
+         'libxcomposite' 'libxdamage' 'libxext' 'libxfixes' 'libxkbcommon'
+         'libxrandr' 'libxss' 'libxtst' 'mesa' 'nspr' 'nss' 'pango'
+         'systemd-libs')
+optdepends=('libayatana-appindicator: tray icon'
             'discord: Rich Presence integration')
 provides=('nintendo-music-client')
 conflicts=('nintendo-music-client')
@@ -50,8 +53,23 @@ package() {
     # this by launching with --no-sandbox; an installed package should not.
     chmod 4755 "${pkgdir}/opt/${pkgname}/chrome-sandbox"
 
+    # A launcher rather than a symlink, so the sandbox fallback can be applied.
+    # Upstream's AppRun probes for unprivileged user namespaces and adds
+    # --no-sandbox when they are unavailable; a bare symlink loses that and the
+    # app then refuses to start on systems where they are restricted.
     install -dm755 "${pkgdir}/usr/bin"
-    ln -s "/opt/${pkgname}/nintendo-music" "${pkgdir}/usr/bin/nintendo-music"
+    cat > "${pkgdir}/usr/bin/nintendo-music" <<'LAUNCHER'
+#!/bin/sh
+for arg in "$@"; do
+    [ "$arg" = "--no-sandbox" ] && exec /opt/nintendo-music-client-bin/nintendo-music "$@"
+done
+if unshare -Ur true 2>/dev/null; then
+    exec /opt/nintendo-music-client-bin/nintendo-music "$@"
+else
+    exec /opt/nintendo-music-client-bin/nintendo-music --no-sandbox "$@"
+fi
+LAUNCHER
+    chmod 755 "${pkgdir}/usr/bin/nintendo-music"
 
     # Upstream ships a single 480x480 icon, which is not a standard hicolor
     # size, so it also goes to pixmaps as a fallback for older menus.
@@ -62,7 +80,7 @@ package() {
 
     install -Dm644 "squashfs-root/NintendoMusic.desktop" \
         "${pkgdir}/usr/share/applications/${pkgname}.desktop"
-    sed -i -e "s|^Exec=.*|Exec=/opt/${pkgname}/nintendo-music %U|" \
+    sed -i -e "s|^Exec=.*|Exec=/usr/bin/nintendo-music %U|" \
            -e "/^X-AppImage-Version=/d" \
         "${pkgdir}/usr/share/applications/${pkgname}.desktop"
 }
