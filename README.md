@@ -2,90 +2,94 @@
   <img src="icon.png" width="96" alt="Nintendo Music PC">
 </p>
 
-<h1 align="center">Nintendo Music PC 🎧</h1>
+<h1 align="center">Nintendo Music PC</h1>
 
 <p align="center">
-  Un client de bureau <b>non-officiel</b> pour <a href="https://music.nintendo.com/">Nintendo Music</a>, basé sur Electron.<br>
-  Rich Presence Discord dynamique, thèmes personnalisables, CSS injecté et bien plus.
+  An <b>unofficial</b> desktop client for <a href="https://music.nintendo.com/">Nintendo Music</a>, built with Electron.<br>
+  Discord Rich Presence, a full settings panel, telemetry blocking, custom themes and an optional site redesign.
 </p>
 
 <p align="center">
-  <img alt="platform" src="https://img.shields.io/badge/plateforme-Windows%20%7C%20Linux%20%7C%20macOS-blue">
+  <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue">
   <img alt="electron" src="https://img.shields.io/badge/Electron-42%20(Castlabs%2FWidevine)-9feaf9">
-  <img alt="status" src="https://img.shields.io/badge/statut-non--officiel-orange">
+  <img alt="languages" src="https://img.shields.io/badge/UI-6%20languages-brightgreen">
+  <img alt="status" src="https://img.shields.io/badge/status-unofficial-orange">
 </p>
 
 ---
 
-> ⚠️ **Avertissement** : ce projet n'est ni développé, ni approuvé, ni affilié à Nintendo Co., Ltd. ou à l'une de ses filiales. Il s'agit d'un client tiers qui affiche le site officiel [music.nintendo.com](https://music.nintendo.com/) dans une fenêtre Electron et y ajoute des fonctionnalités de confort (thèmes, Discord, notifications...). Un compte Nintendo avec un abonnement **Nintendo Switch Online** actif reste nécessaire pour écouter les morceaux, exactement comme sur le site web officiel.
+> [!IMPORTANT]
+> This project is not developed, endorsed by, or affiliated with Nintendo Co., Ltd. or any of its subsidiaries. It is a third-party client that displays the official [music.nintendo.com](https://music.nintendo.com/) website in an Electron window and adds convenience features on top. A Nintendo Account with an active **Nintendo Switch Online** subscription is still required to play any music, exactly as on the official website.
 
-## 📚 Sommaire
+## Contents
 
-- [Fonctionnalités](#-fonctionnalités)
-- [Installation](#-installation)
-  - [Utilisateurs (recommandé)](#utilisateurs-recommandé)
-  - [Depuis les sources](#depuis-les-sources)
-- [Compiler l'application](#️-compiler-lapplication)
-- [Guide d'utilisation](#-guide-dutilisation)
-  - [Barre de menu](#barre-de-menu)
-  - [Icône dans la zone de notification (tray)](#icône-dans-la-zone-de-notification-tray)
-  - [Raccourcis clavier](#raccourcis-clavier)
-- [Rich Presence Discord](#-rich-presence-discord)
-- [Éditeur de thèmes](#-éditeur-de-thèmes)
-  - [Thèmes palette](#thèmes-palette)
-  - [CSS personnalisé](#css-personnalisé)
-  - [Import / Export](#import--export)
-- [Fichiers de configuration](#-fichiers-de-configuration)
-- [Vie privée & sécurité](#-vie-privée--sécurité)
-- [Dépannage (FAQ)](#-dépannage-faq)
-- [Contribuer](#-contribuer)
-- [Remerciements](#-remerciements)
-- [Licence](#-licence)
+- [Features](#features)
+- [Installation](#installation)
+- [Building from source](#building-from-source)
+- [Settings](#settings)
+  - [Performance](#performance)
+  - [Privacy](#privacy)
+  - [Redesign](#redesign)
+  - [Themes](#themes)
+  - [Language](#language)
+- [Discord Rich Presence](#discord-rich-presence)
+- [Theme editor](#theme-editor)
+- [Menus and tray](#menus-and-tray)
+- [Where settings are stored](#where-settings-are-stored)
+- [How the optimisations were chosen](#how-the-optimisations-were-chosen)
+- [Troubleshooting](#troubleshooting)
+- [Known limitations](#known-limitations)
+- [Contributing](#contributing)
+- [Credits](#credits)
 
-## 🚀 Fonctionnalités
+## Features
 
-### 🎵 Lecture & compatibilité
-- **Support DRM natif (Widevine)** grâce au build Electron spécialisé de [Castlabs](https://github.com/castlabs/electron-releases), qui évite l'erreur fatale `9012-4001` rencontrée avec un Electron standard.
-- **Instance unique** : relancer l'application ramène simplement la fenêtre existante au premier plan au lieu d'ouvrir un second processus.
-- **Session isolée** (`persist:nintendoMusic`) et **User-Agent personnalisé** pour une compatibilité maximale avec le site.
-- **Blocage des trackers** : les requêtes vers Google Analytics et Sentry sont interceptées et annulées avant de partir.
-- **Touches multimédias globales** : la touche *Lecture/Pause* de votre clavier fonctionne même quand l'application est en arrière-plan.
-- **Fenêtre système** : réduction dans la zone de notification au lieu de se fermer, options de démarrage automatique et de démarrage minimisé, accélération matérielle activable/désactivable.
+### Playback and compatibility
+- **Native Widevine DRM support** through the [Castlabs](https://github.com/castlabs/electron-releases) Electron build, which avoids the fatal `9012-4001` error you get with a standard Electron.
+- **Single instance** — launching the app again brings the existing window to the front instead of starting a second process.
+- **Isolated session** (`persist:nintendoMusic`) with a custom User-Agent.
+- **Global media keys** — the Play/Pause key works even when the app is in the background.
+- **Tray integration** — closing the window keeps playback and Rich Presence running in the background.
 
-### 🎮 Rich Presence Discord
-- Détection en temps réel de la lecture (via `navigator.mediaSession` et les balises `<audio>`/`<video>` de la page).
-- Affiche le **titre du morceau**, le **nom du jeu** (quand le site le fournit) et la **pochette officielle** sur votre profil Discord.
-- **Barre de progression** synchronisée (temps écoulé / restant) grâce aux timestamps Discord natifs.
-- Bascule automatiquement sur *"Dans les menus"* dès la mise en pause, sans attendre.
-- **Mode privé** : masque le titre, l'artiste et la pochette de la musique en cours (utile en streaming ou en visio) sans avoir à couper toute la Rich Presence.
-- **Anti rate-limit** : un système de cache compare l'état précédent avant chaque envoi et n'interroge Discord que si quelque chose a réellement changé.
-- Activable/désactivable entièrement depuis le menu `Discord`.
+### Startup and loading
+- **Instant splash screen**, rendered locally and shown *before* Widevine initialisation, which was previously dead time where nothing appeared on screen.
+- **Custom loading screen** replacing the site's three dots: a five-bar equaliser in your theme's accent colour, with rotating trivia at the bottom about Nintendo and about what was actually measured on the site. Both parts can be switched off independently.
+- **Network preconnect** to every origin used at startup, including the artwork CDN (`image-assets.m.nintendo.com`, 88 requests on the home page alone) and the BaaS authentication gateway.
+- **Page caching** — the site sends `max-age=0` on its HTML, so pages were re-downloaded from the network on every single launch. The client rewrites the cache headers for documents and navigation payloads only. API responses, tokens and authentication are never cached.
 
-### 🔔 Notifications
-- Une notification système (toast Windows/Linux/macOS) s'affiche à chaque changement de morceau, avec le titre et l'artiste.
-- **Interrupteur dédié** (`Système ▸ Show Track Notifications`) pour désactiver ces notifications sans toucher au reste de l'app.
+### Privacy
+- **Granular telemetry blocking** with a live counter of blocked requests:
+  - Nintendo BaaS analytics (`bigdata/v1/analytics/*`) — 13 requests per page load
+  - Google Pub/Sub analytics events — 15 requests per page load
+  - Google Analytics
+  - Sentry error reporting
+- Authentication endpoints on the same domains (`core/v1/*`) are deliberately left untouched.
+- **Discord private mode** hides the current track without turning Rich Presence off entirely.
 
-### 🎨 Apparence & thèmes
-- 3 thèmes intégrés : **Sombre** (par défaut), **Clair**, **Deep Purple**.
-- **9 rayons de bordure** au choix, de `0px` (carré) à `50px` (pilule), appliqués dynamiquement sur toute l'interface.
-- Option **Toujours au premier plan** (Always on Top).
-- **Éditeur de thèmes graphique** intégré (voir plus bas) pour créer vos propres palettes de couleurs ou injecter du CSS personnalisé, sans toucher au code.
-- Thèmes personnalisés sauvegardés, listés et sélectionnables directement depuis le menu `Appearance ▸ Theme ▸ Custom Themes`.
+### Appearance
+- **12 built-in themes**: Dark, Light, Deep Purple, Crimson, Ocean, Forest, Amber, Rose, Nord, Dracula, Gruvbox, Monochrome.
+- **Theme editor** for building your own palettes or injecting raw CSS, with import/export.
+- **Optional site redesign**, all switches reversible instantly:
+  - Density control — the site leaves 48 px between cards; compact mode fits noticeably more on screen
+  - Fixes stretched artwork (the site uses `object-fit: fill` on non-square images)
+  - Adjustable artwork corner radius, hover effects, sticky section headers, restyled scrollbar, custom accent colour
+- **9 border radius presets** and an always-on-top toggle.
 
-## 📦 Installation
+### Interface
+- **Settings window** (`Ctrl+,`) with seven sections and three one-click performance presets.
+- **6 UI languages**: English, French, Spanish, German, Italian, Japanese.
 
-### Utilisateurs (recommandé)
+## Installation
 
-1. Rendez-vous sur la page [Releases](../../releases) du dépôt.
-2. Téléchargez la dernière version de `setup.exe` (Windows).
-3. Lancez l'installeur et suivez les instructions.
-4. Connectez-vous avec votre compte Nintendo (abonnement Nintendo Switch Online requis) au premier lancement.
+1. Download `setup.exe` from the [Releases](../../releases) page.
+2. Run the installer.
+3. Sign in with your Nintendo Account (Nintendo Switch Online subscription required).
 
-> Les builds Linux (`.AppImage`) et macOS (`.dmg`) peuvent être générés vous-même via les commandes ci-dessous — voir [Compiler l'application](#️-compiler-lapplication).
+Linux (`.AppImage`) and macOS (`.dmg`) builds are not published, but you can produce them yourself — see below.
 
-### Depuis les sources
+## Building from source
 
-Prérequis : [Node.js](https://nodejs.org/) 18 ou supérieur.
+Requires [Node.js](https://nodejs.org/) 18 or later.
 
 ```bash
 git clone https://github.com/Axolat000/Unofficial-Nintendo-Music-client.git
@@ -94,140 +98,150 @@ npm install
 npm start
 ```
 
-## 🛠️ Compiler l'application
-
-Le projet utilise [electron-builder](https://www.electron.build/). Les exécutables générés sont placés dans le dossier `dist/`.
+Building installers with [electron-builder](https://www.electron.build/) — output goes to `dist/`:
 
 ```bash
-# Windows (.exe, installeur NSIS)
 npm run build:win
-
-# Linux (.AppImage)
 npm run build:linux
-
-# macOS (.dmg)
 npm run build:mac
 ```
 
-## 📖 Guide d'utilisation
+> Note: NSIS refuses to *emit* an installer literally named `setup.exe` (Windows treats that filename as reserved and the compiler fails). The published asset is renamed after the build.
 
-### Barre de menu
+## Settings
 
-| Menu | Option | Description |
-|---|---|---|
-| **Navigation** | Home | Retourne à la page d'accueil de Nintendo Music |
-| | Reload | Recharge la page |
-| | Quit Client | Ferme complètement l'application |
-| **Appearance** | Theme | Sombre / Clair / Deep Purple / Thèmes custom / Éditeur de thèmes |
-| | Border Radius | 9 presets, de carré à arrondi maximal |
-| | Always on Top | Garde la fenêtre au-dessus des autres |
-| **Discord** | Enable Rich Presence | Active/désactive complètement la Rich Presence |
-| | Private Mode | Masque les infos du morceau en cours dans Discord |
-| **System** | Show Track Notifications | Active/désactive les notifications de changement de morceau |
-| | Run at Startup | Lance l'application au démarrage de Windows/session |
-| | Start Minimized to Tray | Démarre directement dans la zone de notification |
-| | Hardware Acceleration | Active/désactive le rendu accéléré GPU (redémarrage requis) |
+Open with `Ctrl+,`, from the **Settings** menu, or from the tray icon.
 
-### Icône dans la zone de notification (tray)
+### Performance
 
-Cliquer sur l'icône dans la zone de notification affiche/masque la fenêtre. Un clic droit ouvre un menu rapide :
+Three presets:
 
-- **Show / Hide** — afficher/masquer la fenêtre
-- **Play / Pause** — contrôle la lecture sans rouvrir la fenêtre
-- **Next Track** — piste suivante
-- **🎨 Theme Editor...** — ouvre directement l'éditeur de thèmes
-- **Quit** — quitte l'application
-
-> Fermer la fenêtre (❌) ne quitte pas l'application : elle continue de tourner en arrière-plan (musique + Rich Presence) et se réduit dans le tray. Utilisez `Quit` pour quitter réellement.
-
-### Raccourcis clavier
-
-- **Touche Lecture/Pause multimédia** (clavier ou casque) : bascule play/pause, même fenêtre en arrière-plan.
-
-## 🎮 Rich Presence Discord
-
-Pour fonctionner, Discord doit être **lancé sur le même ordinateur** (l'application communique en local via l'IPC natif de Discord, aucune configuration de compte n'est nécessaire).
-
-Ce qui est affiché sur votre profil :
-
-```
-Écoute Nintendo Music
-🎵 <Titre du morceau>
-   <Nom du jeu>            ← si fourni par le site, sinon "Nintendo"
-   ⏱ 00:14 ────●──── 00:45
-```
-
-- Le **nom du jeu** remplace désormais l'affichage générique en double d'« Nintendo » : le mot n'apparaît plus qu'une seule fois (en info-bulle sur la pochette), et la ligne principale montre l'info la plus utile.
-- En **Mode privé** (`Discord ▸ Private Mode`), tout est remplacé par *"Hidden Track" / "Private Mode"* et la pochette par défaut — personne ne voit ce que vous écoutez, mais vos amis savent que l'app tourne.
-- Désactiver `Enable Rich Presence` coupe entièrement l'activité (aucune donnée n'est envoyée à Discord).
-
-## 🎨 Éditeur de thèmes
-
-Accessible depuis `Appearance ▸ Theme ▸ 🎨 Theme Editor...` ou depuis le menu du tray.
-
-### Thèmes palette
-
-Créez un thème en choisissant 6 couleurs (accent, fond principal, fond secondaire, fond tertiaire, texte principal, texte secondaire) : un aperçu en direct des pastilles vous montre le rendu avant application. Les thèmes sont listés dans la barre latérale, duplicables, renommables et supprimables.
-
-### CSS personnalisé
-
-Un onglet dédié permet de coller directement du CSS qui sera injecté dans la page Nintendo Music (via `insertCSS`, sans modifier les fichiers du site). Un aide-mémoire liste les principales variables CSS identifiées sur le site (couleur d'accent, fonds, panneaux...) à surcharger avec `!important`.
-
-### Import / Export
-
-- **Importer** un fichier `.css` (glisser-déposer ou sélection) directement dans l'éditeur.
-- **Importer** un fichier `.json` contenant un ou plusieurs thèmes palette/CSS (fusion avec vos thèmes existants).
-- **Exporter** tous vos thèmes personnalisés dans un `.json` partageable, ou exporter le CSS actuellement collé dans l'éditeur en `.css`.
-
-## 🗂 Fichiers de configuration
-
-L'application stocke ses réglages en dehors du dossier d'installation, dans le répertoire de données utilisateur d'Electron :
-
-| Fichier | Contenu |
+| Preset | What it does |
 |---|---|
-| `%APPDATA%\nintendo-music-pc\nintendo-music-config.json` | Thème actif, rayon de bordure, réglages Discord/notifications, démarrage auto, CSS custom activé, etc. |
-| `%APPDATA%\nintendo-music-pc\nintendo-music-custom-themes.json` | Vos thèmes personnalisés (palettes et CSS sauvegardés). |
+| **Untouched** | No optimisation, the site exactly as Nintendo ships it |
+| **Balanced** | Page cache + telemetry blocking. Recommended. |
+| **Max performance** | Everything on, including experimental options |
 
-*(sous Linux/macOS : `~/.config/nintendo-music-pc/…`)*
+Individual switches:
 
-Supprimer ces fichiers réinitialise l'application à ses valeurs par défaut.
+- **Page cache** — caches page documents and navigation payloads. APIs and tokens are never cached.
+- **Fluid mode** *(experimental, needs a restart)* — GPU compositing for animated elements, and removal of Chromium's frame-rate limiter, vsync and background throttling. Costs more battery in exchange for smoother rendering while minimised.
+- **Clear cache** — forces a full reload from the server.
 
-## 🔒 Vie privée & sécurité
+### Privacy
 
-- Les requêtes de tracking (Google Analytics, Sentry) sont bloquées au niveau réseau, avant même de quitter l'application.
-- Le **Mode privé** Discord permet d'écouter sans exposer le titre du morceau à vos amis.
-- Aucune donnée (compte, morceaux écoutés, thèmes) n'est envoyée à un serveur tiers par cette application : tout reste local, à l'exception du strict nécessaire à la Rich Presence Discord (qui transite uniquement en local vers le client Discord installé sur votre machine).
-- L'authentification Nintendo Switch Online se fait entièrement sur les serveurs officiels de Nintendo, cette application ne fait qu'afficher leur site dans une fenêtre dédiée.
+Each telemetry source has its own switch, plus a live counter of everything blocked since launch.
 
-## 🐛 Dépannage (FAQ)
+### Redesign
 
-**La lecture ne démarre pas / erreur DRM `9012-4001`**
-Vérifiez que vous utilisez bien le build fourni (Electron Castlabs). Si vous compilez vous-même, n'installez pas un Electron standard à la place de la dépendance déclarée dans `package.json`.
+Off by default. Once enabled: density, artwork radius, stretched-artwork fix, hover effects, sticky headers, scrollbar and accent colour. The custom loading screen and its trivia are configured here too.
 
-**Discord n'affiche rien**
-Assurez-vous que l'application Discord (desktop) est bien lancée *avant* ou pendant l'utilisation du client, et que `Discord ▸ Enable Rich Presence` est coché. La connexion IPC se fait automatiquement au démarrage puis retente régulièrement en cas d'échec.
+### Themes
 
-**Les notifications ne s'affichent pas**
-Vérifiez `Système ▸ Show Track Notifications`, ainsi que les autorisations de notification de votre système d'exploitation pour l'application.
+`Appearance ▸ Theme`. The nine palette-based themes are generated by the same engine used by the theme editor, so they behave identically.
 
-**Mon thème custom CSS ne s'applique plus après un redémarrage**
-Le CSS custom et le thème actif sont automatiquement réappliqués au chargement de la page ; si le site a changé sa structure/ses variables entre-temps, il peut être nécessaire d'ajuster votre CSS dans l'éditeur.
+### Language
 
-## 🤝 Contribuer
+Changing the language updates the menus, tray and settings window immediately. The Nintendo Music website keeps its own language, which you change on the site itself.
 
-Les *issues* et *pull requests* sont les bienvenues : rapport de bug, idée de fonctionnalité, nouveau thème à partager, correctif de compatibilité avec une mise à jour du site officiel...
+## Discord Rich Presence
 
-1. Forkez le dépôt
-2. Créez une branche (`git checkout -b feature/ma-fonctionnalite`)
-3. Committez vos changements
-4. Ouvrez une Pull Request
+Discord must be running on the same machine — the client talks to it over local IPC, so there is nothing to configure.
 
-## 🙏 Remerciements
+```
+Listening to Nintendo Music
+♪ <track title>
+  <game name>            ← when the site provides it
+  00:14 ───────── 00:45
+```
 
-- [Nintendo](https://www.nintendo.com/) pour Nintendo Music — tous les morceaux, jeux et marques cités restent la propriété de leurs ayants droit respectifs.
-- [Castlabs](https://github.com/castlabs/electron-releases) pour leur build d'Electron avec support Widevine.
-- La communauté Discord pour la documentation du protocole IPC Rich Presence.
+- The game name replaces what used to be a duplicated "Nintendo" line.
+- **Private mode** replaces everything with *"Hidden Track" / "Private Mode"* and the default artwork.
+- Track-change notifications can be toggled separately in `System`.
 
-## 📄 Licence
+## Theme editor
 
-Projet personnel non-officiel, fourni tel quel, sans garantie. Tous les éléments visuels et musicaux affichés par l'application appartiennent à Nintendo ; ce dépôt ne distribue que le code du client.
+`Appearance ▸ Theme ▸ Theme editor…`
+
+- **Palette themes** — pick six colours (accent, three backgrounds, two text tones) and get a live preview.
+- **Custom CSS** — paste CSS to inject into the page, with a reference list of the site's CSS variables.
+- **Import / export** — drag and drop `.css` or `.json` files, and export your themes to share them.
+
+## Menus and tray
+
+| Menu | Contents |
+|---|---|
+| **Navigation** | Home, Reload, Quit |
+| **Settings** | Open settings (`Ctrl+,`), page cache, redesign, clear cache |
+| **Appearance** | 12 themes, custom themes, theme editor, border radius, always on top |
+| **Discord** | Rich Presence, private mode |
+| **System** | Track notifications, run at startup, start minimized, hardware acceleration |
+
+The tray icon gives you show/hide, play/pause, next track, settings, theme editor and quit. Closing the window hides it rather than quitting — use **Quit** to exit for real.
+
+## Where settings are stored
+
+| File | Contents |
+|---|---|
+| `%APPDATA%\nintendo-music-pc\nintendo-music-config.json` | All settings |
+| `%APPDATA%\nintendo-music-pc\nintendo-music-custom-themes.json` | Your custom themes |
+
+On Linux and macOS: `~/.config/nintendo-music-pc/`. Deleting these files resets the app.
+
+## How the optimisations were chosen
+
+Every performance feature here was measured against the live site rather than guessed at. Some ideas were **dropped** because measurement showed they would do nothing:
+
+| Idea | Measurement | Verdict |
+|---|---|---|
+| Rewrite cache headers for JS/CSS assets | Already `max-age=31536000, immutable`; 47/47 CSS and 25/26 JS served from cache | No gain |
+| Add `loading="lazy"` / `decoding="async"` to images | All 136 images already have both | No gain |
+| Enable HTTP/3 (QUIC) | Server only speaks HTTP/2 | No gain |
+| Prefetch links on hover | Next.js App Router already prefetches | Redundant |
+
+What measurement *did* find, on a signed-in session:
+
+- **~28 of 196 requests per page load are pure telemetry**, several taking 400–600 ms and competing with real content for the connection
+- The **artwork CDN** and the **auth gateway** were paying a full DNS + TLS handshake on the critical path
+- The **HTML document** was fetched from the network on every open (`deliveryType: "network"`), while assets were already cached
+- The real startup cost is **~4 MB of JavaScript** across ~26 chunks and 47 stylesheets, which has to be parsed and executed every launch — hence the splash screen and the enlarged disk cache, which also preserves V8's compiled bytecode between launches
+
+## Troubleshooting
+
+**Playback fails / DRM error `9012-4001`**
+Make sure you are using the provided build. If you build it yourself, do not replace the Castlabs Electron dependency with standard Electron.
+
+**Discord shows nothing**
+Make sure the Discord desktop app is running and `Discord ▸ Enable Rich Presence` is checked. The client reconnects automatically.
+
+**Stale content, or a strange signed-in state**
+Turn off **Page cache** in the settings, or use **Clear cache**.
+
+**The loading screen stays on screen**
+It removes itself as soon as real content is painted, with a hard 12-second ceiling. If you ever see it stuck, turn it off under `Settings ▸ Redesign`.
+
+## Known limitations
+
+- **Colour themes depend on the site's CSS variables** (`--_1hr2ce…`), whose names Nintendo generates at build time. If Nintendo redeploys with new hashes, colour themes stop applying until the variables are updated. The redesign itself targets stable selectors (`main`, `section`, `img[data-nimg]`) and is not affected.
+- **Fluid mode** switches are Chromium command-line flags, so they only take effect after restarting the app.
+- **Loading screen trivia** is written in English and French; other languages fall back to English.
+- The **redesign is off by default** — it is opt-in on purpose.
+
+## Contributing
+
+Issues and pull requests are welcome: bug reports, feature ideas, themes to share, or fixes for when the official site changes.
+
+1. Fork the repository
+2. Create a branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Open a Pull Request
+
+## Credits
+
+- [Nintendo](https://www.nintendo.com/) for Nintendo Music. All tracks, games and trademarks remain the property of their respective owners.
+- [Castlabs](https://github.com/castlabs/electron-releases) for the Widevine-enabled Electron build.
+- The Discord community for documenting the Rich Presence IPC protocol.
+
+---
+
+Personal, unofficial project, provided as is, without warranty. All visual and musical content displayed by the app belongs to Nintendo; this repository only distributes the client code.
