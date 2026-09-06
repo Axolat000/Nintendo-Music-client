@@ -100,17 +100,27 @@ chmod +x Nintendo.Music-*.AppImage && ./Nintendo.Music-*.AppImage
 
 ### Arch Linux
 
-An AUR package is prepared but not yet published, because [AUR account registration is temporarily closed](https://aur.archlinux.org/register) while Arch deals with a wave of automated account creation. In the meantime the PKGBUILD in this repository works directly:
+An AUR package is prepared but not yet published, because [AUR account registration is temporarily closed](https://aur.archlinux.org/register) while Arch deals with a wave of automated account creation. In the meantime the PKGBUILD in this repository installs the same package directly:
 
 ```bash
-git clone https://github.com/Axolat000/Unofficial-Nintendo-Music-client.git
+git clone --depth 1 https://github.com/Axolat000/Unofficial-Nintendo-Music-client.git && cd Unofficial-Nintendo-Music-client/packaging/aur && makepkg -si
 ```
+
+Run it as your normal user, not with `sudo` — `makepkg` asks for the password itself when it reaches the install step.
+
+This gives you `nintendo-music-client-bin`: the app in `/opt`, a desktop entry, the icon, and a `/usr/bin/nintendo-music` launcher that falls back to `--no-sandbox` where unprivileged user namespaces are unavailable.
+
+To update after a new release:
 
 ```bash
-cd Unofficial-Nintendo-Music-client/packaging/aur && makepkg -si
+cd Unofficial-Nintendo-Music-client && git pull && cd packaging/aur && makepkg -si
 ```
 
-This builds and installs the same package that will land on the AUR as `nintendo-music-client-bin`, with a proper desktop entry, icon and `/usr/bin/nintendo-music` launcher. To update later, pull the repository and run `makepkg -si` again.
+To uninstall:
+
+```bash
+sudo pacman -R nintendo-music-client-bin
+```
 
 ## Building from source
 
