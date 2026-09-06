@@ -35,6 +35,9 @@ jobs:
           - name: macos
             os: macos-latest
             script: build:mac
+            # macos-latest runners are Apple Silicon, so without this the
+            # build would only produce an arm64 .dmg and leave Intel Macs out.
+            extra_args: --x64 --arm64
 
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +83,7 @@ jobs:
       # CSC_IDENTITY_AUTO_DISCOVERY disables the search for a signing identity:
       # the macOS build is unsigned and un-notarized on purpose.
       - name: Build
-        run: npm run ${{ matrix.script }} -- --publish never
+        run: npm run ${{ matrix.script }} -- --publish never ${{ matrix.extra_args }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
