@@ -1,0 +1,21 @@
+pkgbase = nintendo-music-client-bin
+	pkgdesc = Unofficial desktop client for Nintendo Music, with Discord Rich Presence, custom themes and telemetry blocking
+	pkgver = 1.2.0
+	pkgrel = 1
+	url = https://github.com/Axolat000/Unofficial-Nintendo-Music-client
+	arch = x86_64
+	license = custom:unknown
+	depends = gtk3
+	depends = nss
+	depends = alsa-lib
+	depends = hicolor-icon-theme
+	optdepends = libnotify: desktop notifications when the track changes
+	optdepends = discord: Rich Presence integration
+	provides = nintendo-music-client
+	conflicts = nintendo-music-client
+	options = !strip
+	noextract = Nintendo.Music-1.2.0.AppImage
+	source = Nintendo.Music-1.2.0.AppImage::https://github.com/Axolat000/Unofficial-Nintendo-Music-client/releases/download/v1.2.0/Nintendo.Music-1.2.0.AppImage
+	sha256sums = 4ebd2ccaf85a8e68c13b5725e14949d66a3b2bb3d39aafdcd5edef7601016b41
+
+pkgname = nintendo-music-client-bin

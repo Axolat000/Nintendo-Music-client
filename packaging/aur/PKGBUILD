@@ -1,0 +1,63 @@
+# Maintainer: Axolat <REPLACE_WITH_YOUR_AUR_EMAIL>
+
+# Repackages the official AppImage from the GitHub releases page, hence the
+# -bin suffix. Building from source would require the Castlabs Electron fork
+# (Widevine DRM), which is not packaged in the Arch repositories.
+
+pkgname=nintendo-music-client-bin
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Unofficial desktop client for Nintendo Music, with Discord Rich Presence, custom themes and telemetry blocking"
+arch=('x86_64')
+url="https://github.com/Axolat000/Unofficial-Nintendo-Music-client"
+license=('custom:unknown')
+depends=('gtk3' 'nss' 'alsa-lib' 'hicolor-icon-theme')
+optdepends=('libnotify: desktop notifications when the track changes'
+            'discord: Rich Presence integration')
+provides=('nintendo-music-client')
+conflicts=('nintendo-music-client')
+options=('!strip')
+
+_appimage="Nintendo.Music-${pkgver}.AppImage"
+source=("${_appimage}::${url}/releases/download/v${pkgver}/${_appimage}")
+sha256sums=('4ebd2ccaf85a8e68c13b5725e14949d66a3b2bb3d39aafdcd5edef7601016b41')
+noextract=("${_appimage}")
+
+prepare() {
+    chmod +x "${_appimage}"
+    "./${_appimage}" --appimage-extract >/dev/null
+}
+
+package() {
+    install -dm755 "${pkgdir}/opt/${pkgname}"
+    cp -a squashfs-root/. "${pkgdir}/opt/${pkgname}/"
+
+    # AppImage plumbing that serves no purpose once the app is installed
+    rm -f "${pkgdir}/opt/${pkgname}/AppRun" \
+          "${pkgdir}/opt/${pkgname}/.DirIcon" \
+          "${pkgdir}/opt/${pkgname}/nintendo-music.png" \
+          "${pkgdir}/opt/${pkgname}/NintendoMusic.desktop"
+    rm -rf "${pkgdir}/opt/${pkgname}/usr"
+
+    chmod -R go-w "${pkgdir}/opt/${pkgname}"
+
+    # Chromium's sandbox helper has to be setuid root. The AppImage sidesteps
+    # this by launching with --no-sandbox; an installed package should not.
+    chmod 4755 "${pkgdir}/opt/${pkgname}/chrome-sandbox"
+
+    install -dm755 "${pkgdir}/usr/bin"
+    ln -s "/opt/${pkgname}/nintendo-music" "${pkgdir}/usr/bin/nintendo-music"
+
+    # Upstream ships a single 480x480 icon, which is not a standard hicolor
+    # size, so it also goes to pixmaps as a fallback for older menus.
+    install -Dm644 "squashfs-root/usr/share/icons/hicolor/480x480/apps/nintendo-music.png" \
+        "${pkgdir}/usr/share/icons/hicolor/480x480/apps/nintendo-music.png"
+    install -Dm644 "squashfs-root/usr/share/icons/hicolor/480x480/apps/nintendo-music.png" \
+        "${pkgdir}/usr/share/pixmaps/nintendo-music.png"
+
+    install -Dm644 "squashfs-root/NintendoMusic.desktop" \
+        "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+    sed -i -e "s|^Exec=.*|Exec=/opt/${pkgname}/nintendo-music %U|" \
+           -e "/^X-AppImage-Version=/d" \
+        "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+}
