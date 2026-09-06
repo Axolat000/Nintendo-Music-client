@@ -1,7 +1,7 @@
 pkgbase = nintendo-music-client-bin
 	pkgdesc = Unofficial desktop client for Nintendo Music, with Discord Rich Presence, custom themes and telemetry blocking
 	pkgver = 1.2.0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/Axolat000/Unofficial-Nintendo-Music-client
 	arch = x86_64
 	license = GPL-3.0-or-later
