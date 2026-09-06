@@ -6,9 +6,10 @@ The package repackages the official AppImage from the GitHub releases page, whic
 
 ## Before the first publication
 
-1. **Pick a license.** The repository currently has no `LICENSE` file, so the PKGBUILD declares `license=('custom:unknown')`. Add a license at the repository root, then update that field (`license=('MIT')` and so on). Without one, nobody legally knows what they are allowed to do with the code.
-2. **Fill in the maintainer line.** The first line of the PKGBUILD contains `REPLACE_WITH_YOUR_AUR_EMAIL` — put the address tied to your AUR account there.
-3. **Create an AUR account** at https://aur.archlinux.org/register and add your SSH **public** key to your account settings.
+1. **Fill in the maintainer line.** The first line of the PKGBUILD contains `REPLACE_WITH_YOUR_AUR_EMAIL` — put the address tied to your AUR account there.
+2. **Create an AUR account** at https://aur.archlinux.org/register and add your SSH **public** key to your account settings.
+
+The project is licensed under GPL-3.0-or-later, which the PKGBUILD declares with its SPDX identifier. The licence text is not installed by the package because GPL-3.0 ships in Arch's `licenses` package under `/usr/share/licenses/common/`.
 
 ## Publishing
 

@@ -4,6 +4,7 @@
   "desktopName": "NintendoMusic",
   "description": "Client PC non-officiel pour Nintendo Music",
   "author": "Axolat",
+  "license": "GPL-3.0-or-later",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

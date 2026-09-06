@@ -10,7 +10,7 @@ pkgrel=1
 pkgdesc="Unofficial desktop client for Nintendo Music, with Discord Rich Presence, custom themes and telemetry blocking"
 arch=('x86_64')
 url="https://github.com/Axolat000/Unofficial-Nintendo-Music-client"
-license=('custom:unknown')
+license=('GPL-3.0-or-later')
 depends=('gtk3' 'nss' 'alsa-lib' 'hicolor-icon-theme')
 optdepends=('libnotify: desktop notifications when the track changes'
             'discord: Rich Presence integration')

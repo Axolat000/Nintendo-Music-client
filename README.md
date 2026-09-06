@@ -248,6 +248,10 @@ Issues and pull requests are welcome: bug reports, feature ideas, themes to shar
 - [Castlabs](https://github.com/castlabs/electron-releases) for the Widevine-enabled Electron build.
 - The Discord community for documenting the Rich Presence IPC protocol.
 
----
+## License
 
-Personal, unofficial project, provided as is, without warranty. All visual and musical content displayed by the app belongs to Nintendo; this repository only distributes the client code.
+[GNU General Public License v3.0 or later](LICENSE).
+
+In short: you are free to use, study, modify and share this client. If you distribute a modified version, you must publish your source code under the same license and keep the original copyright notices — so it cannot be turned into a closed, proprietary product.
+
+Provided as is, without warranty. All visual and musical content displayed by the app belongs to Nintendo; this repository only distributes the client code.
