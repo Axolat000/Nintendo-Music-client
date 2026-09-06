@@ -1,0 +1,6 @@
+# Shell scripts and packaging metadata must keep LF endings: makepkg and bash
+# fail on files checked out with CRLF, which Git would otherwise do on Windows.
+packaging/aur/PKGBUILD text eol=lf
+packaging/aur/.SRCINFO text eol=lf
+*.sh text eol=lf
+.github/workflows/*.yml text eol=lf
