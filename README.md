@@ -108,6 +108,12 @@ npm run build:mac
 
 > Note: NSIS refuses to *emit* an installer literally named `setup.exe` (Windows treats that filename as reserved and the compiler fails). The published asset is renamed after the build.
 
+### Cross-platform builds
+
+A `.dmg` can only be built on macOS, and AppImage packaging needs Linux tooling — neither can be produced from Windows. The [`Build` workflow](.github/workflows/build.yml) therefore builds each target on its native GitHub runner and attaches the results to the matching release. It runs automatically when a `v*` tag is pushed, and can be triggered manually from the Actions tab (optionally passing an existing tag to attach the builds to).
+
+The macOS build is **unsigned and un-notarized**: on first launch, right-click the app and choose *Open* to get past Gatekeeper.
+
 ## Settings
 
 Open with `Ctrl+,`, from the **Settings** menu, or from the tray icon.

@@ -1,0 +1,119 @@
+name: Build
+
+# Windows installers can be produced locally, but AppImage packaging needs
+# Linux tooling and a .dmg can only be built on macOS. This workflow builds
+# each target on its native runner and attaches the results to the release.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing release tag to attach the builds to (e.g. v1.2.0). Leave empty to only produce downloadable artifacts.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows
+            os: windows-latest
+            script: build:win
+          - name: linux
+            os: ubuntu-latest
+            script: build:linux
+          - name: macos
+            os: macos-latest
+            script: build:mac
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # icon.png is 480x480, below the 512x512 electron-builder needs to make
+      # an .icns, so it is generated here with the native macOS tools.
+      # The two largest sizes are upscaled; supply a 1024x1024 source for a
+      # crisper icon.
+      - name: Generate macOS icon
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p icon.iconset
+          sips -z 16 16     icon.png --out icon.iconset/icon_16x16.png
+          sips -z 32 32     icon.png --out icon.iconset/icon_16x16@2x.png
+          sips -z 32 32     icon.png --out icon.iconset/icon_32x32.png
+          sips -z 64 64     icon.png --out icon.iconset/icon_32x32@2x.png
+          sips -z 128 128   icon.png --out icon.iconset/icon_128x128.png
+          sips -z 256 256   icon.png --out icon.iconset/icon_128x128@2x.png
+          sips -z 256 256   icon.png --out icon.iconset/icon_256x256.png
+          sips -z 512 512   icon.png --out icon.iconset/icon_256x256@2x.png
+          sips -z 512 512   icon.png --out icon.iconset/icon_512x512.png
+          sips -z 1024 1024 icon.png --out icon.iconset/icon_512x512@2x.png
+          iconutil -c icns icon.iconset -o icon.icns
+
+      # Same reason on Linux: some targets expect a 512x512 source.
+      - name: Upscale icon for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if command -v convert >/dev/null; then
+            convert icon.png -resize 512x512 icon-512.png && mv icon-512.png icon.png
+          else
+            echo "ImageMagick unavailable, keeping the original icon"
+          fi
+
+      # CSC_IDENTITY_AUTO_DISCOVERY disables the search for a signing identity:
+      # the macOS build is unsigned and un-notarized on purpose.
+      - name: Build
+        run: npm run ${{ matrix.script }} -- --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      # NSIS refuses to emit a file literally named setup.exe, so it is renamed
+      # afterwards to match the name used on the releases page.
+      - name: Rename Windows installer
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: mv "dist/Nintendo Music Setup"*.exe dist/setup.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          if-no-files-found: error
+          path: |
+            dist/setup.exe
+            dist/*.AppImage
+            dist/*.dmg
+
+  release:
+    name: Attach to release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.release_tag != ''
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Upload assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
+        run: |
+          ls -R artifacts
+          gh release upload "$TAG" artifacts/*/* --clobber --repo "$GITHUB_REPOSITORY"
