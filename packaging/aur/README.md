@@ -8,6 +8,10 @@ The package repackages the official AppImage from the GitHub releases page, whic
 
 **Create an AUR account** at https://aur.archlinux.org/register and add your SSH **public** key to your account settings. The maintainer line in the PKGBUILD is already set to `axolated@proton.me`; use the same address for the account.
 
+> **Registration is currently closed.** The AUR paused new account creation while dealing with a wave of automated signups, following the [malicious package incident](https://archlinux.org/news/active-aur-malicious-packages-incident/). No reopening date has been announced; it is announced on [aur-general](https://lists.archlinux.org/mailman3/lists/aur-general.lists.archlinux.org/) and the [Arch news feed](https://archlinux.org/news/). Do not script retries against the registration page — they ask explicitly not to.
+>
+> This blocks publication only. Arch users can already install the package straight from this repository with `makepkg -si`, as documented in the main README.
+
 The project is licensed under GPL-3.0-or-later, which the PKGBUILD declares with its SPDX identifier. The licence text is not installed by the package because GPL-3.0 ships in Arch's `licenses` package under `/usr/share/licenses/common/`.
 
 ## Publishing

@@ -81,11 +81,36 @@
 
 ## Installation
 
-1. Download `setup.exe` from the [Releases](../../releases) page.
-2. Run the installer.
-3. Sign in with your Nintendo Account (Nintendo Switch Online subscription required).
+Every platform is built automatically and attached to the [Releases](../../releases) page. A Nintendo Account with an active Nintendo Switch Online subscription is required to play anything.
 
-Linux (`.AppImage`) and macOS (`.dmg`) builds are not published, but you can produce them yourself — see below.
+| Platform | File |
+|---|---|
+| Windows | `setup.exe` |
+| Linux | `Nintendo.Music-<version>.AppImage` |
+| macOS (Apple Silicon) | `Nintendo.Music-<version>-arm64.dmg` |
+| macOS (Intel) | `Nintendo.Music-<version>.dmg` |
+
+**Linux** — make the AppImage executable, then run it:
+
+```bash
+chmod +x Nintendo.Music-*.AppImage && ./Nintendo.Music-*.AppImage
+```
+
+**macOS** — the builds are unsigned, so on first launch right-click the app and choose *Open* to get past Gatekeeper.
+
+### Arch Linux
+
+An AUR package is prepared but not yet published, because [AUR account registration is temporarily closed](https://aur.archlinux.org/register) while Arch deals with a wave of automated account creation. In the meantime the PKGBUILD in this repository works directly:
+
+```bash
+git clone https://github.com/Axolat000/Unofficial-Nintendo-Music-client.git
+```
+
+```bash
+cd Unofficial-Nintendo-Music-client/packaging/aur && makepkg -si
+```
+
+This builds and installs the same package that will land on the AUR as `nintendo-music-client-bin`, with a proper desktop entry, icon and `/usr/bin/nintendo-music` launcher. To update later, pull the repository and run `makepkg -si` again.
 
 ## Building from source
 
