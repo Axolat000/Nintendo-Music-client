@@ -6,8 +6,7 @@ The package repackages the official AppImage from the GitHub releases page, whic
 
 ## Before the first publication
 
-1. **Fill in the maintainer line.** The first line of the PKGBUILD contains `REPLACE_WITH_YOUR_AUR_EMAIL` — put the address tied to your AUR account there.
-2. **Create an AUR account** at https://aur.archlinux.org/register and add your SSH **public** key to your account settings.
+**Create an AUR account** at https://aur.archlinux.org/register and add your SSH **public** key to your account settings. The maintainer line in the PKGBUILD is already set to `axolated@proton.me`; use the same address for the account.
 
 The project is licensed under GPL-3.0-or-later, which the PKGBUILD declares with its SPDX identifier. The licence text is not installed by the package because GPL-3.0 ships in Arch's `licenses` package under `/usr/share/licenses/common/`.
 

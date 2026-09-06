@@ -1,4 +1,4 @@
-# Maintainer: Axolat <REPLACE_WITH_YOUR_AUR_EMAIL>
+# Maintainer: Axolat <axolated@proton.me>
 
 # Repackages the official AppImage from the GitHub releases page, hence the
 # -bin suffix. Building from source would require the Castlabs Electron fork
